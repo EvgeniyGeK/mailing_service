@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% extends 'mailing/base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header"><h4 class="mb-0">Регистрация нового пользователя</h4></div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
