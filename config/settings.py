@@ -135,14 +135,18 @@ STATICFILES_DIRS = [
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'HOST': os.getenv('EMAIL_HOST', 'smtp.yandex.ru'),
+        'PORT': int(os.getenv('EMAIL_PORT', 465)),
+        'USE_SSL': os.getenv('EMAIL_USE_SSL', 'True') == 'True',
+        'USER': os.getenv('EMAIL_HOST_USER'),
+        'PASSWORD': os.getenv('EMAIL_HOST_PASSWORD'),
+    }
 }
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'noreply@mailing-service.local')
 
 AUTH_USER_MODEL = 'users.User'
 
-
-DEFAULT_FROM_EMAIL = 'noreply@mailing-service.local'
 
 
 LOGIN_URL = 'users:login'
