@@ -6,7 +6,8 @@ from django.contrib.auth.views import (
 from django.urls import path, reverse_lazy
 from users.apps import UsersConfig
 from users.forms import UserLoginForm, CustomPasswordResetForm, CustomSetPasswordForm
-from users.views import RegisterView, email_verification, ProfileView, ProfileUpdateView
+from users.views import RegisterView, email_verification, ProfileView, ProfileUpdateView, UserListView, \
+    ToggleUserActiveView
 
 app_name = UsersConfig.name
 
@@ -36,4 +37,7 @@ urlpatterns = [
     path('password-reset/complete/', PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'
     ), name='password_reset_complete'),
+    path('list/', UserListView.as_view(), name='user_list'),
+    path('<int:pk>/toggle-active/', ToggleUserActiveView.as_view(), name='toggle_active'),
+
 ]

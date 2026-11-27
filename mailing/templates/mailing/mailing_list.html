@@ -27,12 +27,18 @@
                 <td>#{{ item.pk }}</td>
                 <td><a href="{% url 'mailing:mailing_detail' item.pk %}">{{ item.message.subject }}</a></td>
                 <td>{{ item.start_time|date:"d.m.Y H:i" }}</td>
-                <td>{{ item.end_time|date:"d.m.Y H:i" }}</td>
-                <td><span class="badge bg-secondary">{{ item.current_status }}</span></td>
                 <td class="text-end">
                     <a href="{% url 'mailing:mailing_detail' item.pk %}" class="btn btn-sm btn-outline-primary">Открыть</a>
-                    <a href="{% url 'mailing:mailing_update' item.pk %}" class="btn btn-sm btn-outline-secondary">Изменить</a>
-                    <a href="{% url 'mailing:mailing_delete' item.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                    {% if item.owner == user or user.is_superuser %}
+                        <a href="{% url 'mailing:mailing_update' item.pk %}" class="btn btn-sm btn-outline-secondary">Изменить</a>
+                        <a href="{% url 'mailing:mailing_delete' item.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                    {% endif %}
+                    {% if perms.mailing.can_disable_mailing or user.is_superuser %}
+                        <form method="post" action="{% url 'mailing:mailing_disable' item.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-warning">Отключить</button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% empty %}

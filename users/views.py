@@ -1,7 +1,7 @@
 import secrets
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -9,6 +9,9 @@ from django.views.generic import CreateView, UpdateView, DetailView
 
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
+from django.views import View
+from django.views.generic import ListView
+from mailing.views import is_manager
 
 
 class RegisterView(CreateView):
@@ -62,3 +65,27 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+class ManagerRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return is_manager(self.request.user)
+
+
+class UserListView(LoginRequiredMixin, ManagerRequiredMixin, ListView):
+    model = User
+    template_name = 'users/user_list.html'
+    context_object_name = 'users_list'
+
+
+class ToggleUserActiveView(LoginRequiredMixin, ManagerRequiredMixin, View):
+    def post(self, request, pk):
+        target_user = get_object_or_404(User, pk=pk)
+        if target_user.is_superuser:
+            messages.error(request, 'Нельзя заблокировать суперпользователя.')
+        else:
+            target_user.is_active = not target_user.is_active
+            target_user.save(update_fields=['is_active'])
+            status_text = 'разблокирован' if target_user.is_active else 'заблокирован'
+            messages.info(request, f'Пользователь {target_user.email} {status_text}.')
+        return redirect('users:user_list')
+
