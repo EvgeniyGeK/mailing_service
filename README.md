@@ -83,7 +83,7 @@ mailing_service/
 
 ### 1. Клонирование репозитория
 ```bash
-git clone https://github.com<ВАШ_ЛОГИН>/mailing_service.git
+git clone https://github.com<EvgeniyGeK/>/mailing_service.git
 cd mailing_service
 ```
 
