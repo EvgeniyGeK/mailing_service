@@ -9,6 +9,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from mailing.forms import RecipientForm, MessageForm, MailingForm
 from mailing.models import Recipient, Message, Mailing, MailingAttempt
 from mailing.services import send_mailing
+from django.core.cache import cache
 
 
 def is_manager(user):
@@ -27,13 +28,19 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        all_mailings = Mailing.objects.all()
-        active_mailings_count = sum(
-            1 for mailing in all_mailings if mailing.current_status == Mailing.STATUS_STARTED
-        )
-        context['total_mailings'] = all_mailings.count()
-        context['active_mailings'] = active_mailings_count
-        context['unique_recipients'] = Recipient.objects.values('email').distinct().count()
+        stats = cache.get('home_stats')
+        if stats is None:
+            all_mailings = Mailing.objects.all()
+            active_mailings_count = sum(
+                1 for mailing in all_mailings if mailing.current_status == Mailing.STATUS_STARTED
+            )
+            stats = {
+                'total_mailings': all_mailings.count(),
+                'active_mailings': active_mailings_count,
+                'unique_recipients': Recipient.objects.values('email').distinct().count(),
+            }
+            cache.set('home_stats', stats, 60 * 5)  # кэш на 5 минут
+        context.update(stats)
         return context
 
 

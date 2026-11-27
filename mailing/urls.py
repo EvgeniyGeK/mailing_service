@@ -1,5 +1,6 @@
 from django.urls import path
 from mailing.apps import MailingConfig
+from django.views.decorators.cache import cache_page
 from mailing.views import (
     HomeView,
     RecipientListView, RecipientCreateView, RecipientUpdateView, RecipientDeleteView,
@@ -34,4 +35,5 @@ urlpatterns = [
     path('mailings/<int:pk>/send/', SendMailingView.as_view(), name='mailing_send'),
     path('attempts/', MailingAttemptListView.as_view(), name='attempt_list'),
     path('mailings/<int:pk>/disable/', DisableMailingView.as_view(), name='mailing_disable'),
+    path('messages/', cache_page(60)(MessageListView.as_view()), name='message_list'),
 ]

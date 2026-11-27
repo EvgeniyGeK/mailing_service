@@ -149,4 +149,20 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'mailing:home'
 LOGOUT_REDIRECT_URL = 'mailing:home'
 
+CACHE_ENABLED = os.getenv('CACHE_ENABLED', 'False') == 'True'
+
+if CACHE_ENABLED:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+        }
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
+
 
