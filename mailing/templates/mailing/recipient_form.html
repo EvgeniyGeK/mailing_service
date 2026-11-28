@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% extends 'mailing/base.html' %}
+
+{% block title %}{% if object %}Редактирование получателя{% else %}Новый получатель{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">{% if object %}Редактировать получателя{% else %}Добавить получателя{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                    <a href="{% url 'mailing:recipient_list' %}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

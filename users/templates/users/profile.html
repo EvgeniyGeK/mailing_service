@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% extends 'mailing/base.html' %}
+
+{% block title %}Мой профиль{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Профиль пользователя</h4>
+                <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+            </div>
+            <div class="card-body">
+                {% if user_obj.avatar %}
+                    <img src="{{ user_obj.avatar.url }}" alt="Аватар" class="img-thumbnail mb-3" style="max-width: 150px;">
+                {% endif %}
+                <p><strong>Email:</strong> {{ user_obj.email }}</p>
+                <p><strong>Имя:</strong> {{ user_obj.first_name|default:"—" }}</p>
+                <p><strong>Фамилия:</strong> {{ user_obj.last_name|default:"—" }}</p>
+                <p><strong>Телефон:</strong> {{ user_obj.phone|default:"—" }}</p>
+                <p><strong>Страна:</strong> {{ user_obj.country|default:"—" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
