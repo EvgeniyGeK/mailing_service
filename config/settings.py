@@ -133,17 +133,18 @@ STATICFILES_DIRS = [
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
-        'HOST': os.getenv('EMAIL_HOST', 'smtp.yandex.ru'),
-        'PORT': int(os.getenv('EMAIL_PORT', 465)),
-        'USE_SSL': os.getenv('EMAIL_USE_SSL', 'True') == 'True',
-        'USER': os.getenv('EMAIL_HOST_USER'),
-        'PASSWORD': os.getenv('EMAIL_HOST_PASSWORD'),
-    }
-}
-DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'noreply@mailing-service.local')
+EMAIL_BACKEND = os.getenv(
+    'EMAIL_BACKEND',
+    'django.core.mail.backends.console.EmailBackend'
+)
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.yandex.ru')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 465))
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'True') == 'True'
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER') or 'noreply@example.com'
 
 AUTH_USER_MODEL = 'users.User'
 
